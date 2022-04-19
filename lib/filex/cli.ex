@@ -20,19 +20,20 @@ defmodule Filex.CLI do
 
   def read_file(label) do
     {:ok, contents} = File.read(@text_file_path)
-    IO.inspect(contents, label: label)
+    IO.write(label <> ":\n" <> contents)
   end
 
   def write_to_file(input) do
     File.write(@text_file_path, "\n#{input}", [:append])
+    read_file("New file contents")
   end
 
   def delete_from_file(input) do
     new_contents =
     File.stream!(@text_file_path)
-    |> Stream.map(&String.split(&1, input, trim: true))
+    |> Stream.map(&String.split(&1, List.to_string(input), trim: true))
+    |> Stream.reject(&(&1 == ["\n"]))
     |> Enum.to_list()
-    |> List.flatten()
     |> List.to_string()
     File.write(@text_file_path, new_contents)
     read_file("New file contents")
