@@ -66,15 +66,15 @@ defmodule FilexCLITest do
       assert parse_args(["--delete", "1"]) == "23 456\n"
     end
 
-    test "command line -d alias allows for writing to text file" do
+    test "command line -d alias allows for deleting items from text file" do
       assert parse_args(["-d", "1"]) == "23 456\n"
     end
 
-    test "delete_from_file removes space if it appears directly after user input in text file" do
+    test "delete_from_file function removes space if it appears directly after user input in text file" do
       assert parse_args(["--delete", "123"]) == "456\n"
     end
 
-    test "delete_from_file removes free-standing newlines" do
+    test "delete_from_file function removes free-standing newlines" do
       assert parse_args(["--delete", "456"]) == "123 "
     end
   end
