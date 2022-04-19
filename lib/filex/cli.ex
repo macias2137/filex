@@ -7,7 +7,6 @@ defmodule Filex.CLI do
   end
 
   def parse_args(argv) do
-    IO.inspect(argv)
     parse = OptionParser.parse(argv,
     strict: [read: :boolean, write: :boolean, delete: :boolean],
     aliases: [r: :read, w: :write, d: :delete])
@@ -32,7 +31,8 @@ defmodule Filex.CLI do
 
   def delete_from_file(input) do
     new_contents =
-    File.stream!(@text_file_path)
+    @text_file_path
+    |> File.stream!()
     |> Stream.map(&String.split(&1, [List.to_string(input), List.to_string(input) <> " "], trim: true))
     |> Enum.to_list()
     |> List.flatten()
