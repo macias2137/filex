@@ -7,6 +7,7 @@ defmodule Filex.CLI do
   end
 
   def parse_args(argv) do
+    IO.inspect(argv)
     parse = OptionParser.parse(argv,
     strict: [read: :boolean, write: :boolean, delete: :boolean],
     aliases: [r: :read, w: :write, d: :delete])
@@ -21,19 +22,21 @@ defmodule Filex.CLI do
   def read_file(label) do
     {:ok, contents} = File.read(@text_file_path)
     IO.write(label <> ":\n" <> contents)
+    contents
   end
 
   def write_to_file(input) do
-    File.write(@text_file_path, "\n#{input}", [:append])
+    File.write(@text_file_path, "#{input}\n", [:append])
     read_file("New file contents")
   end
 
   def delete_from_file(input) do
     new_contents =
     File.stream!(@text_file_path)
-    |> Stream.map(&String.split(&1, List.to_string(input), trim: true))
-    |> Stream.reject(&(&1 == ["\n"]))
+    |> Stream.map(&String.split(&1, [List.to_string(input), List.to_string(input) <> " "], trim: true))
     |> Enum.to_list()
+    |> List.flatten()
+    |> Enum.reject(&(&1 == "\n"))
     |> List.to_string()
     File.write(@text_file_path, new_contents)
     read_file("New file contents")
