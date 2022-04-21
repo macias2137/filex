@@ -8,8 +8,8 @@ defmodule Filex.CLI do
 
   def parse_args(argv) do
     parse = OptionParser.parse(argv,
-    strict: [read: :boolean, write: :boolean, delete: :boolean],
-    aliases: [r: :read, w: :write, d: :delete])
+    strict: [read: :boolean, write: :boolean, delete: :boolean, pokemon: :boolean],
+    aliases: [r: :read, w: :write, d: :delete, p: :pokemon])
 
     case parse do
      {[read: true], _, _} -> read_file("File contents")

@@ -3,8 +3,7 @@ defmodule Filex.Repo.Migrations.CreateTypes do
 
   def change do
     create table(:types) do
-      add :name, :string
-      timestamps()
+      add :name, :string, null: false
     end
   end
 end
