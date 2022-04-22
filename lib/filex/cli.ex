@@ -1,5 +1,5 @@
 defmodule Filex.CLI do
-  import Filex.Pokemon
+
   @text_file_path "/Users/maciek/Desktop/projects/filex/lib/filex/text_file.txt"
 
   def main(argv) do
@@ -8,14 +8,15 @@ defmodule Filex.CLI do
 
   def parse_args(argv) do
     parse = OptionParser.parse(argv,
-    strict: [read: :boolean, write: :boolean, delete: :boolean, pokemon: :boolean],
-    aliases: [r: :read, w: :write, d: :delete, p: :pokemon])
+    strict: [read: :boolean, write: :boolean, delete: :boolean, pokemon: :boolean, type: :boolean],
+    aliases: [r: :read, w: :write, d: :delete, p: :pokemon, t: :type])
 
     case parse do
      {[read: true], _, _} -> read_file("File contents")
      {[write: true], user_input, _} -> write_to_file(user_input)
      {[delete: true], user_input, _} -> delete_from_file(user_input)
      {[pokemon: true], [name, pokedex, type], _} -> add_pokemon(name, pokedex, type)
+     {[type: true], [name], _} -> add_type(name)
     end
   end
 
@@ -44,7 +45,14 @@ defmodule Filex.CLI do
   end
 
   def add_pokemon(name, pokedex, basic) do
-    changeset = changeset(%Filex.Pokemon{}, %{name: name, pokedex: pokedex, basic: basic})
+    changeset = Filex.Pokemon.changeset(%Filex.Pokemon{}, %{name: name, pokedex: pokedex, basic: basic})
     Filex.Repo.insert(changeset)
+  end
+
+  def add_type(name) do
+    changeset = Filex.Type.changeset(%Filex.Type{}, %{name: name})
+    Filex.Repo.insert(changeset)
+    # IO.inspect(name)
+    # IO.inspect(changeset)
   end
 end

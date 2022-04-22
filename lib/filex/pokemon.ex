@@ -6,7 +6,7 @@ defmodule Filex.Pokemon do
     field :name, :string
     field :pokedex, :integer
     field :basic, :boolean
-    belongs_to :types, Filex.Type
+    belongs_to :type, Filex.Type
   end
 
   def changeset(pokemon, params \\ %{}) do
