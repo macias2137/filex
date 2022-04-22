@@ -6,6 +6,7 @@ defmodule Filex.Pokemon do
     field :name, :string
     field :pokedex, :integer
     field :basic, :boolean
+    belongs_to :types, Filex.Type
   end
 
   def changeset(pokemon, params \\ %{}) do
@@ -16,4 +17,5 @@ defmodule Filex.Pokemon do
     |> unique_constraint(:pokedex)
     |> unique_constraint(:name)
   end
+
 end

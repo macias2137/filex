@@ -1,7 +1,7 @@
 defmodule Filex.Type do
   use Ecto.Schema
 
-  schema "type" do
+  schema "types" do
     field :name, :string
   end
 end

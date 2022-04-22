@@ -6,6 +6,7 @@ defmodule Filex.Repo.Migrations.CreatePokemon do
         add :name, :string, null: false
         add :pokedex, :integer
         add :basic, :boolean
+        references(:types)
     end
 
     create unique_index(:pokemon, [:name])
