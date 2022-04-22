@@ -1,5 +1,5 @@
 defmodule Filex.CLI do
-
+  import Filex.Pokemon
   @text_file_path "/Users/maciek/Desktop/projects/filex/lib/filex/text_file.txt"
 
   def main(argv) do
@@ -15,6 +15,7 @@ defmodule Filex.CLI do
      {[read: true], _, _} -> read_file("File contents")
      {[write: true], user_input, _} -> write_to_file(user_input)
      {[delete: true], user_input, _} -> delete_from_file(user_input)
+     {[pokemon: true], [name, pokedex, type], _} -> add_pokemon(name, pokedex, type)
     end
   end
 
@@ -40,5 +41,12 @@ defmodule Filex.CLI do
     |> List.to_string()
     File.write(@text_file_path, new_contents)
     read_file("New file contents")
+  end
+
+  def add_pokemon(name, pokedex, basic) do
+    changeset = changeset(%Filex.Pokemon{}, %{name: name, pokedex: pokedex, basic: basic})
+    case Filex.Repo.insert(changeset) do
+      {:ok, changeset} -> IO.write("New Pokemon added")
+    end
   end
 end

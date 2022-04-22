@@ -9,5 +9,6 @@ defmodule Filex.Repo.Migrations.CreatePokemon do
     end
 
     create unique_index(:pokemon, [:name])
+    create unique_index(:pokemon, [:pokedex])
   end
 end

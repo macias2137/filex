@@ -12,6 +12,8 @@ defmodule Filex.Pokemon do
     pokemon
     |> cast(params, [:name, :pokedex, :basic])
     |> validate_required([:name])
+    |> validate_inclusion(:pokedex, 1..151)
+    |> unique_constraint(:pokedex)
     |> unique_constraint(:name)
   end
 end
