@@ -11,7 +11,7 @@ defmodule Filex.Pokemon do
 
   def changeset(pokemon, params \\ %{}) do
     pokemon
-    |> cast(params, [:name, :pokedex, :basic])
+    |> cast(params, [:name, :pokedex, :basic, :type_id])
     |> validate_required([:name])
     |> validate_inclusion(:pokedex, 1..151)
     |> unique_constraint(:pokedex)
