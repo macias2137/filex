@@ -7,3 +7,5 @@ config :filex, Filex.Repo,
   hostname: "localhost"
 
 config :filex, ecto_repos: [Filex.Repo]
+
+config :filex, Filex.Repo, pool: Ecto.Adapters.SQL.Sandbox

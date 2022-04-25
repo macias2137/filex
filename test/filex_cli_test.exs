@@ -5,6 +5,10 @@ defmodule FilexCLITest do
   doctest Filex.CLI
 
   import Filex.CLI
+  import Filex.Factory
+  alias Filex.Pokemon
+  alias Filex.Repo
+  alias Filex.Type
 
   describe "read contents from text file" do
     setup do
@@ -76,6 +80,21 @@ defmodule FilexCLITest do
 
     test "delete_from_file function removes free-standing newlines" do
       assert parse_args(["--delete", "456"]) == "123 "
+    end
+  end
+
+  describe "enter data into database" do
+    setup do
+     alias Ecto.Adapters.SQL.Sandbox
+     :ok = Sandbox.checkout(Filex.Repo)
+    end
+    # setup do
+      # Repo.delete_all(Pokemon)
+    #   Repo.delete_all(Type)
+    # end
+
+    test "command line -p alias inserts struct into table 'pokemon'" do
+      pokemon = insert(:pokemon)
     end
   end
 end
