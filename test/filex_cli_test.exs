@@ -1,6 +1,6 @@
 defmodule FilexCLITest do
   @text_file_path "/Users/maciek/Desktop/projects/filex/lib/filex/text_file.txt"
-
+  @pokemon_test_args ["Charmander", 4, true, 24]
   use ExUnit.Case, async: true
   doctest Filex.CLI
 
@@ -88,13 +88,15 @@ defmodule FilexCLITest do
      alias Ecto.Adapters.SQL.Sandbox
      :ok = Sandbox.checkout(Filex.Repo)
     end
-    # setup do
-      # Repo.delete_all(Pokemon)
-    #   Repo.delete_all(Type)
-    # end
 
     test "command line -p alias inserts struct into table 'pokemon'" do
-      pokemon = insert(:pokemon)
+      {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args)
+      assert [pokemon.name, pokemon.pokedex, pokemon.basic, pokemon.type_id] == @pokemon_test_args
+    end
+
+    test "ensures name is unique" do
+      parse_args(["-p"] ++ @pokemon_test_args)
+      assert {:error, changeset} = parse_args(["-p", "Charmander", 6, false, 25])
     end
   end
 end

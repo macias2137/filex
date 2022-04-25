@@ -8,4 +8,4 @@ config :filex, Filex.Repo,
 
 config :filex, ecto_repos: [Filex.Repo]
 
-config :filex, Filex.Repo, pool: Ecto.Adapters.SQL.Sandbox
+import_config "#{Mix.env()}.exs"
