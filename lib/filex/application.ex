@@ -8,7 +8,7 @@ defmodule Filex.Application do
   @impl true
   def start(_type, _args) do
     children = [
-     Filex.Repo, Filex.Test.Repo
+     Filex.Repo
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

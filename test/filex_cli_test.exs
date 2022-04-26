@@ -1,7 +1,6 @@
 defmodule FilexCLITest do
 
   @text_file_path "/Users/maciek/Desktop/projects/filex/lib/filex/text_file.txt"
-  @pokemon_test_args ["Charmander", 4, true, 24]
 
   use ExUnit.Case, async: true
   doctest Filex.CLI
@@ -11,6 +10,12 @@ defmodule FilexCLITest do
   alias Filex.Pokemon
   alias Filex.Repo
   alias Filex.Type
+
+  setup do
+    alias Ecto.Adapters.SQL.Sandbox
+    Sandbox.mode(Filex.Repo, :manual)
+    :ok = Sandbox.checkout(Filex.Repo)
+  end
 
   describe "read contents from text file" do
     setup do
@@ -86,32 +91,32 @@ defmodule FilexCLITest do
   end
 
   describe "enter data into database" do
-    setup do
-     alias Ecto.Adapters.SQL.Sandbox
-     :ok = Sandbox.checkout(Filex.Repo)
-    end
+
+    @pokemon_test_args ["Charmander", 4, true]
 
     test "command line -p alias inserts struct into table 'pokemon'" do
-      {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args)
-      assert [pokemon.name, pokemon.pokedex, pokemon.basic, pokemon.type_id] == @pokemon_test_args
+      type = insert(:type)
+      {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args ++ [Map.get(type, :id)])
+      assert [pokemon.name, pokemon.pokedex, pokemon.basic, pokemon.type_id] == @pokemon_test_args ++ [Map.get(type, :id)]
     end
 
     test "returns error if name in Pokemon is not unique" do
+      type = insert(:type)
       assert {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args)
-      assert {:error, changeset} = parse_args(["-p", "Charmander", 6, false, 25])
+      assert {:error, changeset} = parse_args(["-p", "Charmander", 6, false, 1])
     end
 
     test "returns error if pokedex in Pokemon is not unique" do
       assert {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args)
-      assert {:error, changeset} = parse_args(["-p", "Bulbasaur", 4, true, 25])
+      assert {:error, changeset} = parse_args(["-p", "Bulbasaur", 4, true, 1])
     end
 
     test "inserts into database if pokedex is an integer between 1 and 151, returns error otherwise" do
       assert {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args)
-      assert {:error, changeset} = parse_args(["-p", "Squirtle", 161, true, 24])
-      assert {:error, changeset} = parse_args(["-p", "Bulbasaur", 0.66, true, 24])
-      assert {:error, changeset} = parse_args(["-p", "Charmeleon", -99, false, 24])
-      assert {:error, changeset} = parse_args(["-p", "Ivysaur", -2.37, false, 24])
+      assert {:error, changeset} = parse_args(["-p", "Squirtle", 161, true, 1])
+      assert {:error, changeset} = parse_args(["-p", "Bulbasaur", 0.66, true, 1])
+      assert {:error, changeset} = parse_args(["-p", "Charmeleon", -99, false, 1])
+      assert {:error, changeset} = parse_args(["-p", "Ivysaur", -2.37, false, 1])
     end
 
     test "inserts into database if name in Type is unique, returns error otherwise" do
