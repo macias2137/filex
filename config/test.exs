@@ -6,5 +6,3 @@ username: "postgres",
 password: "postgres",
 hostname: "localhost",
 pool: Ecto.Adapters.SQL.Sandbox
-
-# config :filex, ecto_repos: [Filex.Repo]
