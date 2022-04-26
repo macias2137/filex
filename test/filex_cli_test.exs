@@ -90,29 +90,31 @@ defmodule FilexCLITest do
     end
   end
 
-  describe "enter data into database" do
+  describe "database" do
 
     @pokemon_test_args ["Charmander", 4, true]
 
-    test "command line -p alias inserts struct into table 'pokemon'" do
-      type = insert(:type)
-      {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args ++ [Map.get(type, :id)])
-      assert [pokemon.name, pokemon.pokedex, pokemon.basic, pokemon.type_id] == @pokemon_test_args ++ [Map.get(type, :id)]
+    setup do
+      %{type: insert(:type)}
     end
 
-    test "returns error if name in Pokemon is not unique" do
-      type = insert(:type)
-      assert {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args)
-      assert {:error, changeset} = parse_args(["-p", "Charmander", 6, false, 1])
+    test "command line -p alias inserts struct into table 'pokemon'", %{type: type} do
+      {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args ++ [type.id])
+      assert [pokemon.name, pokemon.pokedex, pokemon.basic, pokemon.type_id] == @pokemon_test_args ++ [type.id]
     end
 
-    test "returns error if pokedex in Pokemon is not unique" do
-      assert {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args)
-      assert {:error, changeset} = parse_args(["-p", "Bulbasaur", 4, true, 1])
+    test "returns error if name in Pokemon is not unique", %{type: type} do
+      assert {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args ++ [type.id])
+      assert {:error, changeset} = parse_args(["-p", "Charmander", 6, false] ++ [type.id])
     end
 
-    test "inserts into database if pokedex is an integer between 1 and 151, returns error otherwise" do
-      assert {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args)
+    test "returns error if pokedex in Pokemon is not unique", %{type: type} do
+      assert {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args ++ [type.id])
+      assert {:error, changeset} = parse_args(["-p", "Bulbasaur", 4, true] ++ [type.id])
+    end
+
+    test "inserts into database if pokedex is an integer between 1 and 151, returns error otherwise", %{type: type} do
+      assert {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args ++ [type.id])
       assert {:error, changeset} = parse_args(["-p", "Squirtle", 161, true, 1])
       assert {:error, changeset} = parse_args(["-p", "Bulbasaur", 0.66, true, 1])
       assert {:error, changeset} = parse_args(["-p", "Charmeleon", -99, false, 1])
@@ -124,6 +126,15 @@ defmodule FilexCLITest do
       assert {:error, changeset} = parse_args(["-t", "rock"])
       assert {:ok, type} = parse_args(["-t", "dragon"])
       assert {:error, changeset} = parse_args(["-t", "dragon"])
+    end
+
+    test "get_all_pokemon_by_type function fetches all pokemon of given type", %{type: type} do
+      insert(:pokemon, name: "Charmander", pokedex: 4, type: type)
+      insert(:pokemon, name: "Charmeleon", pokedex: 5, type: type)
+      insert(:pokemon, name: "Charizard", pokedex: 6, type: type)
+
+      pokemon_list = get_all_pokemon_by_type(type.name)
+      assert Enum.map(pokemon_list, &(Map.get(&1, :name))) == ["Charmander", "Charmeleon", "Charizard"]
     end
   end
 end

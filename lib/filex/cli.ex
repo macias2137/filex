@@ -50,7 +50,6 @@ defmodule Filex.CLI do
 
   def add_pokemon(name, pokedex, basic, type_id) do
     changeset = Pokemon.changeset(%Filex.Pokemon{}, %{name: name, pokedex: pokedex, basic: basic, type_id: type_id})
-    IO.inspect(changeset)
     Filex.Repo.insert(changeset)
   end
 
