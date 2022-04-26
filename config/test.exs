@@ -1,4 +1,10 @@
 import Config
 
-config :filex, Filex.Repo,
-  pool: Ecto.Adapters.SQL.Sandbox
+config :filex, Filex.Test.Repo,
+database: "filex_test_repo",
+username: "postgres",
+password: "postgres",
+hostname: "localhost",
+pool: Ecto.Adapters.SQL.Sandbox
+
+config :filex, ecto_repos: [Filex.Test.Repo]

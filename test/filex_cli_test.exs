@@ -120,7 +120,5 @@ defmodule FilexCLITest do
       assert {:ok, type} = parse_args(["-t", "dragon"])
       assert {:error, changeset} = parse_args(["-t", "dragon"])
     end
-
-
   end
 end
