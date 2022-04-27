@@ -59,8 +59,6 @@ defmodule Filex.CLI do
   end
 
   def get_all_pokemon_by_type(type) do
-    # query = from t in Type, where: t.name == ^type
-    # query = from p in Pokemon, join: q in subquery(query), on: p.type_id == q.id
     query = from p in Pokemon, join: t in assoc(p, :type), where: t.name == ^type
     Repo.all(query)
   end
