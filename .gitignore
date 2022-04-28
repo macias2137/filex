@@ -24,3 +24,4 @@ filex-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+/lib/filex/text_file.txt

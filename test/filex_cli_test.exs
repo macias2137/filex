@@ -103,17 +103,17 @@ defmodule FilexCLITest do
       assert [pokemon.name, pokemon.pokedex, pokemon.basic, pokemon.type_id] == @pokemon_test_args ++ [type.id]
     end
 
-    test "returns error if name in Pokemon is not unique", %{type: type} do
+    test "inserts struct if name in Pokemon is unique, returns error otherwise", %{type: type} do
       assert {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args ++ [type.id])
       assert {:error, changeset} = parse_args(["-p", "Charmander", 6, false] ++ [type.id])
     end
 
-    test "returns error if pokedex in Pokemon is not unique", %{type: type} do
+    test "inserts struct if pokedex in Pokemon is unique, returns error otherwise", %{type: type} do
       assert {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args ++ [type.id])
       assert {:error, changeset} = parse_args(["-p", "Bulbasaur", 4, true] ++ [type.id])
     end
 
-    test "inserts into database if pokedex is an integer between 1 and 151, returns error otherwise", %{type: type} do
+    test "inserts struct if pokedex is an integer between 1 and 151, returns error otherwise", %{type: type} do
       assert {:ok, pokemon} = parse_args(["-p"] ++ @pokemon_test_args ++ [type.id])
       assert {:error, changeset} = parse_args(["-p", "Squirtle", 161, true, 1])
       assert {:error, changeset} = parse_args(["-p", "Bulbasaur", 0.66, true, 1])
@@ -121,14 +121,14 @@ defmodule FilexCLITest do
       assert {:error, changeset} = parse_args(["-p", "Ivysaur", -2.37, false, 1])
     end
 
-    test "inserts into database if name in Type is unique, returns error otherwise" do
+    test "inserts struct if name in Type is unique, returns error otherwise" do
       assert {:ok, type} = parse_args(["-t", "rock"])
       assert {:error, changeset} = parse_args(["-t", "rock"])
       assert {:ok, type} = parse_args(["-t", "dragon"])
       assert {:error, changeset} = parse_args(["-t", "dragon"])
     end
 
-    test "get_all_pokemon_by_type function fetches all pokemon of given type", %{type: type} do
+    test "function get_all_pokemon_by_type fetches all pokemon of given type", %{type: type} do
       insert(:pokemon, name: "Charmander", pokedex: 4, type: type)
       insert(:pokemon, name: "Charmeleon", pokedex: 5, type: type)
       insert(:pokemon, name: "Charizard", pokedex: 6, type: type)
